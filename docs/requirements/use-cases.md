@@ -1586,18 +1586,28 @@ Details:
 
 
   
-
-
 **Priority:** Low
-**Frequency of Use:** Rare. Occurs occasionally when a previously withdrawn student returns to a course section.
-**Business Rules:** BR-student-lifecycle
+**Frequency of Use:** About once or twice a week and only used by the limited number of instructors
+**Business Rules:** BR-non-submitter, BR-nudge-limit, BR-section-scoped-access, BR-active-weeks, BR-team-assignment-required
 
 **Associated Information:**
-- The course admin or instructor shall be able to cancel the use case at any time prior to submitting it.
+- The instructor can cancel before confirming the send, and nothing is sent or recorded if they do (extension 3b).
+- The reminder email's subject line, wording, and layout are left to the implementation, provided it lists every item the student is missing for the selected week.
+- The non-submitter list is built from student submission records, which are protected under CO-ferpa. It is visible only to the instructor of that section (BR-section-scoped-access).
+- The scheduled weekly reminder (FR-NOT-weekly-reminder) is a separate behavior and does not count toward the nudge limit.
 
-**Related Use Cases:** UC-STU-delete-student: Delete a student; UC-STU-deactivate-student: Deactivate a student
+**Related Use Cases:** UC-EVA-submit-evaluation: Submit peer evaluation; the weekly activity report submission use case
+
 **Assumptions:**
+- Each section's due dates for the weekly activity report and peer evaluation are already configured in the system.
+- The email service is the same one the existing scheduler uses.
+- Students can delete a submission after submitting (confirm this in the repo, and drop extension 2c if they can't).
+
 **Open Issues:**
+- The time zone that defines "calendar day" for BR-nudge-limit is not yet decided.
+- The instructor cannot exclude individual students from a send. It is all-or-nothing.
+- The scheduler skipping students who have already submitted is a separate use case that is not specified here.
+- Whether students can still submit after the window closes has not been confirmed. Extension 3a assumes the reminder is still useful.
 
 
 ## **Instructor**
