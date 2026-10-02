@@ -1522,6 +1522,84 @@ Details:
 **Assumptions:**
 **Open Issues:**
 
+### **UC-STU-email-reminder: The course instructor emails a student a reminder about unsubmitted WAR/Peer Evaluation  
+
+**UC ID and Name:** UC-STU-email-reminder: Remind student by email 
+**Created By:** Cody Pinkston
+**Date Created:** 10-1-2026
+**Primary Actor:** course instructor
+**Secondary Actors:** 
+**Trigger:** The course instructor indicates to send a reminder email to students.
+**Description:** The course instructor views a list of students with unsubmitted WAR/Peer Evaluation.
+
+**Preconditions:**
+- PRE-1. The course instructor is logged into the system.
+- PRE-2. The course instructor is assigned to at least one team.
+- PRE-3. At least one student in the instructor's course section has not submitted the WAR or peer evaluation due for the current week. 
+
+**Postconditions:**
+- POST-1. A reminder email has been sent to each student in the instructor's section who was a non-submitter(BR-non-submitter).
+- POST-2. Each send attempt, successful or rejected, is recorded with the instructor, the student, and the time, so the nudge limit (BR-nudge-limit) can be enforced.
+- POST-3. No submission records are created, changed, or deleted.
+
+**Main Success Scenario:**
+1. The instructor selects a week to be viewed.
+2. The system displays the students in the instructor's section who are non-submitters for that week (BR-non-submitter, BR-section-scoped-access).
+3. The instructor indicates that a reminder be sent to the listed students.
+4. The system re-evaluates which students are still non-submitters and excludes any who have reached the nudge limit (BR-nudge-limit).
+5. The system sends a reminder email to each remaining student.
+6. The system records each sent email (BR-nudge-limit).
+7. The system displays a summary to the instructor: how many reminders were sent, how many students were skipped at the limit, how many had already submitted, and how many failed.
+
+**Extensions:**
+- 1a. The selected week is not an active week (BR-active-weeks).
+  - 1a1. The system informs the instructor that the week is not active and keeps the current selection.
+  - 1a2. Return to step 1.
+- 2a. There are no non-submitters for the selected week.
+  - 2a1. The system informs the instructor that there are no non-submitters.
+  - 2a2. The use case ends.
+- 2b. The section has students who are not assigned to a team.
+  - 2b1. The system excludes them from the list (BR-non-submitter) and informs the instructor how many students were excluded for this reason.
+  - 2b2. Resume at step 3.
+- 2c. A student submitted and then deleted the submission.
+  - 2c1. The system lists the student as a non-submitter (BR-non-submitter). No special handling is needed.
+- 3a. An item's due date and time for the selected week is in the past.
+  - 3a1. The system warns the instructor that the reminder will tell affected students the item is past due.
+  - 3a2. The instructor confirms, and the use case resumes at step 4.
+- 3b. The instructor cancels instead of sending.
+  - 3b1. The system sends no emails and records nothing.
+  - 3b2. The use case ends.
+- 4a. No recipients remain after the re-evaluation, because every listed student has reached the nudge limit (BR-nudge-limit), has since submitted, or both.
+  - 4a1. The system informs the instructor that no reminders can be sent and gives the counts for each reason.
+  - 4a2. The use case ends.
+- 4b. Some listed students have submitted since step 2.
+  - 4b1. The system drops them from the recipients.
+  - 4b2. The system includes them in the step 7 summary as "already submitted."
+  - 4b3. Resume at step 5.
+- 5a. The mail server rejects a student's address.
+  - 5a1. The system records the attempt as failed. A failed attempt does not count toward the limit (BR-nudge-limit).
+  - 5a2. The system continues with the remaining recipients.
+  - 5a3. Resume at step 6. The failure is reported in the step 7 summary.
+- 5b. The email service is unavailable for all sends.
+  - 5b1. The system stops sending and records each unsent student as failed.
+  - 5b2. Resume at step 7, where the summary reports that the remaining reminders were not sent.
+
+
+  
+
+
+**Priority:** Low
+**Frequency of Use:** Rare. Occurs occasionally when a previously withdrawn student returns to a course section.
+**Business Rules:** BR-student-lifecycle
+
+**Associated Information:**
+- The course admin or instructor shall be able to cancel the use case at any time prior to submitting it.
+
+**Related Use Cases:** UC-STU-delete-student: Delete a student; UC-STU-deactivate-student: Deactivate a student
+**Assumptions:**
+**Open Issues:**
+
+
 ## **Instructor**
 
 ### **UC-INS-invite-instructors: The course admin invites instructors to register an account**
